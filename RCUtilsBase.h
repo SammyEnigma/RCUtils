@@ -19,3 +19,15 @@ inline void MemZero(T& Struct)
 {
 	ZeroMemory(&Struct, sizeof(T));
 }
+
+template <typename T>
+inline T Min(T A, T B)
+{
+	return A < B ? A : B;
+}
+
+template <typename T>
+inline T Max(T A, T B)
+{
+	return A > B ? A : B;
+}
