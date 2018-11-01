@@ -21,8 +21,10 @@
   <ItemGroup>
     <ClInclude Include="RCUtilsBase.h" />
     <ClInclude Include="RCUtilsBit.h" />
+    <ClInclude Include="RCUtilsCmdLine.h" />
     <ClInclude Include="RCUtilsFile.h" />
     <ClInclude Include="RCUtilsMath.h" />
+    <ClInclude Include="RCUtilsString.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{523964B9-E191-41D2-AF86-EFA3C99E3656}</ProjectGuid>

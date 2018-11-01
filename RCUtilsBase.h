@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <vector>
+#include <map>
 
 typedef uint8_t		uint8;
 typedef uint16_t	uint16;

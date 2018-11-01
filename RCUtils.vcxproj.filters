@@ -27,5 +27,11 @@
     <ClInclude Include="RCUtilsFile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="RCUtilsCmdLine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RCUtilsString.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
