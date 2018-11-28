@@ -17,7 +17,7 @@ typedef int64_t		int64;
 template <typename T>
 inline void MemZero(T& Struct)
 {
-	ZeroMemory(&Struct, sizeof(T));
+	memset(&Struct, 0, sizeof(T));
 }
 
 template <typename T>
