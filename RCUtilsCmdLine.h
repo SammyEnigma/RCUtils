@@ -55,6 +55,22 @@ namespace RCUtils
 			return ValueIfMissing;
 		}
 
+		bool TryGetStringFromPrefix(const char* Prefix, const char*& OutValue)
+		{
+			check(Prefix);
+			uint32 PrefixLength = (uint32)strlen(Prefix);
+			for (const auto& Arg : Args)
+			{
+				if (!_strnicmp(Arg.c_str(), Prefix, PrefixLength))
+				{
+					OutValue = Arg.c_str() + PrefixLength;
+					return true;
+				}
+			}
+
+			return false;
+		}
+
 		std::string Exe;
 		std::string FullCmdLine;
 		std::vector<std::string> Args;
