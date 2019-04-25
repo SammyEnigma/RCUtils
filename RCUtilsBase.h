@@ -1,8 +1,15 @@
 #pragma once
 
+#pragma warning(disable:4577)
+
+#pragma warning(push)
+#pragma warning(disable:4530)
 #include <stdio.h>
+#include <string>
+#include <list>
 #include <vector>
 #include <map>
+#pragma warning(pop)
 
 typedef uint8_t		uint8;
 typedef uint16_t	uint16;
@@ -30,4 +37,11 @@ template <typename T>
 inline T Max(T A, T B)
 {
 	return A > B ? A : B;
+}
+
+template <typename T>
+inline void ZeroMem(T& Object)
+{
+	const auto Size = sizeof(T);
+	memset(&Object, 0, Size);
 }
