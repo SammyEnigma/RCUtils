@@ -41,8 +41,7 @@ namespace RCUtils
 			fseek(File, 0, SEEK_END);
 			long Size = ftell(File);
 			check(Size > 0);
-			std::vector<char> Data;
-			Data.resize(Size);
+			std::vector<char> Data(Size);
 			fseek(File, 0, SEEK_SET);
 			fread(&Data[0], 1, Size, File);
 			fclose(File);

@@ -151,6 +151,14 @@ struct FVector4
 		O.w = w;
 		return O;
 	}
+
+	FVector4& operator +=(const FVector3& V)
+	{
+		x = x + V.x;
+		y = y + V.y;
+		z = z + V.z;
+		return *this;
+	}
 };
 
 struct FMatrix3x3
