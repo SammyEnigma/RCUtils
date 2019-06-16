@@ -83,6 +83,14 @@ struct FVector3
 		O.z = z + V.z;
 		return O;
 	}
+
+	FVector3& operator += (const FVector3& V)
+	{
+		x += V.x;
+		y += V.y;
+		z += V.z;
+		return *this;
+	}
 };
 
 inline FVector3 Cross(const FVector3& A, const FVector3& B)
@@ -158,6 +166,11 @@ struct FVector4
 		y = y + V.y;
 		z = z + V.z;
 		return *this;
+	}
+
+	static float Dot(const FVector4& A, const FVector4& B)
+	{
+		return A.x * B.x + A.y * B.y + A.z * B.z + A.w * B.w;
 	}
 };
 
@@ -340,6 +353,27 @@ struct FMatrix4x4
 	void Set(int32 Row, int32 Col, float Value)
 	{
 		Values[Row * 4 + Col] = Value;
+	}
+
+	FVector4 Col(int32 Index) const
+	{
+		return FVector4(
+			Rows[0].Values[Index],
+			Rows[1].Values[Index],
+			Rows[2].Values[Index],
+			Rows[3].Values[Index]);
+	}
+
+	FMatrix4x4& operator *=(const FMatrix4x4& M)
+	{
+		for (int32 Row = 0; Row < 4; ++Row)
+		{
+			for (int32 Col = 0; Col < 4; ++Col)
+			{
+				Set(Row, Col, FVector4::Dot(Rows[Row], M.Col(Col)));
+			}
+		}
+		return *this;
 	}
 };
 
