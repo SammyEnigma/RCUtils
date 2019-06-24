@@ -52,6 +52,15 @@ struct FVector3
 		};
 	};
 
+	FVector3() = default;
+
+	FVector3(float InX, float InY, float InZ)
+		: x(InX)
+		, y(InY)
+		, z(InZ)
+	{
+	}
+
 	void Set(float InX, float InY, float InZ)
 	{
 		x = InX;
@@ -91,19 +100,65 @@ struct FVector3
 		z += V.z;
 		return *this;
 	}
+
+	FVector3& operator *= (float f)
+	{
+		x *= f;
+		y *= f;
+		z *= f;
+		return *this;
+	}
+
+	FVector3& operator *= (const FVector3& V)
+	{
+		x *= V.x;
+		y *= V.y;
+		z *= V.z;
+		return *this;
+	}
+
+	static FVector3 Cross(const FVector3& A, const FVector3& B)
+	{
+		FVector3 R;
+		float u1 = A.x;
+		float u2 = A.y;
+		float u3 = A.z;
+		float v1 = B.x;
+		float v2 = B.y;
+		float v3 = B.z;
+		R.Set(u2*v3 - u3*v2, u3*v1 - u1*v3, u1*v2 - u2*v1);
+		return R;
+	}
+
+	static float Dot(const FVector3& A, const FVector3& B)
+	{
+		return A.x * B.x + A.y * B.y + A.z * B.z;
+	}
 };
 
-inline FVector3 Cross(const FVector3& A, const FVector3& B)
+inline FVector3 operator + (const FVector3& A, const FVector3& B)
 {
-	FVector3 R;
-	float u1 = A.x;
-	float u2 = A.y;
-	float u3 = A.z;
-	float v1 = B.x;
-	float v2 = B.y;
-	float v3 = B.z;
-	R.Set(u2*v3 - u3*v2, u3*v1 - u1*v3, u1*v2 - u2*v1);
-	return R;
+	return FVector3(A.x + B.x, A.y + B.y, A.z + B.z);
+}
+
+inline FVector3 operator - (const FVector3& A, const FVector3& B)
+{
+	return FVector3(A.x - B.x, A.y - B.y, A.z - B.z);
+}
+
+inline FVector3 operator * (const FVector3& A, const FVector3& B)
+{
+	return FVector3(A.x * B.x, A.y * B.y, A.z * B.z);
+}
+
+inline FVector3 operator * (const FVector3& A, float f)
+{
+	return FVector3(A.x * f, A.y * f, A.z * f);
+}
+
+inline FVector3 operator * (float f, const FVector3& A)
+{
+	return FVector3(A.x * f, A.y * f, A.z * f);
 }
 
 struct FVector4
@@ -125,6 +180,11 @@ struct FVector4
 	}
 
 	FVector4() {}
+
+	FVector3 GetVector3() const
+	{
+		return FVector3(x, y, z);
+	}
 
 	FVector4(const FVector3& V, float W)
 	{
@@ -437,6 +497,42 @@ struct FMatrix4x4
 			}
 		}
 		return M;
+	}
+
+	static FMatrix4x4 GetInverse(const FMatrix4x4& M)
+	{
+		FVector3 a = M.Rows[0].GetVector3();
+		FVector3 b = M.Rows[1].GetVector3();
+		FVector3 c = M.Rows[2].GetVector3();
+		FVector3 d = M.Rows[3].GetVector3();
+
+		float x = M.Rows[3].x;
+		float y = M.Rows[3].y;
+		float z = M.Rows[3].z;
+		float w = M.Rows[3].w;
+
+		FVector3 s = FVector3::Cross(a, b);
+		FVector3 t = FVector3::Cross(c, d);
+		FVector3 u = a * y - b * x;
+		FVector3 v = c * w - d * z;
+
+		float InvDet = 1.0f / (FVector3::Dot(s, v) + FVector3::Dot(t, u));
+		s *= InvDet;
+		t *= InvDet;
+		u *= InvDet;
+		v *= InvDet;
+
+		FVector3 r0 = FVector3::Cross(b, v) + t * y;
+		FVector3 r1 = FVector3::Cross(v, a) - t * x;
+		FVector3 r2 = FVector3::Cross(d, u) + s * w;
+		FVector3 r3 = FVector3::Cross(u, c) - s * z;
+
+		FMatrix4x4 Out;
+		Out.Rows[0] = FVector4(r0, -FVector3::Dot(b, t));
+		Out.Rows[1] = FVector4(r1, FVector3::Dot(a, t));
+		Out.Rows[2] = FVector4(r2, -FVector3::Dot(d, s));
+		Out.Rows[3] = FVector4(r3, FVector3::Dot(c, s));
+		return Out;
 	}
 };
 
