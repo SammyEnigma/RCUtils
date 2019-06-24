@@ -174,6 +174,43 @@ struct FVector4
 	}
 };
 
+struct FIntVector4
+{
+	union
+	{
+		int32 Values[4];
+		struct
+		{
+			int32 x, y, z, w;
+		};
+	};
+
+	static FIntVector4 GetZero()
+	{
+		FIntVector4 New;
+		MemZero(New);
+		return New;
+	}
+
+	FIntVector4() {}
+
+	FIntVector4(int32 InX, int32 InY, int32 InZ, int32 InW)
+	{
+		x = InX;
+		y = InY;
+		z = InZ;
+		w = InW;
+	}
+
+	void Set(int32 InX, int32 InY, int32 InZ, int32 InW)
+	{
+		x = InX;
+		y = InY;
+		z = InZ;
+		w = InW;
+	}
+};
+
 struct FMatrix3x3
 {
 	union
@@ -273,6 +310,15 @@ struct FMatrix4x4
 
 	FMatrix4x4() {}
 
+	FMatrix4x4& operator = (const FMatrix4x4& M)
+	{
+		Rows[0] = M.Rows[0];
+		Rows[1] = M.Rows[1];
+		Rows[2] = M.Rows[2];
+		Rows[3] = M.Rows[3];
+		return *this;
+	}
+
 	FMatrix4x4 GetTranspose() const
 	{
 		FMatrix4x4 New;
@@ -350,6 +396,16 @@ struct FMatrix4x4
 		return New;
 	}
 
+	static FMatrix4x4 GetTranslation(const FVector3& Pos)
+	{
+		FMatrix4x4 New;
+		New.Rows[0].Set(1.0f, 0.0, 0.0f, 0.0f);
+		New.Rows[1].Set(0.0f, 1.0, 0.0f, 0.0f);
+		New.Rows[2].Set(0.0f, 0.0, 1.0f, 0.0f);
+		New.Rows[3] = FVector4(Pos, 1.0f);
+		return New;
+	}
+
 	void Set(int32 Row, int32 Col, float Value)
 	{
 		Values[Row * 4 + Col] = Value;
@@ -366,14 +422,21 @@ struct FMatrix4x4
 
 	FMatrix4x4& operator *=(const FMatrix4x4& M)
 	{
+		*this = Multiply(*this, M);
+		return *this;
+	}
+
+	static FMatrix4x4 Multiply(const FMatrix4x4& M0, const FMatrix4x4& M1)
+	{
+		FMatrix4x4 M;
 		for (int32 Row = 0; Row < 4; ++Row)
 		{
 			for (int32 Col = 0; Col < 4; ++Col)
 			{
-				Set(Row, Col, FVector4::Dot(Rows[Row], M.Col(Col)));
+				M.Set(Row, Col, FVector4::Dot(M0.Rows[Row], M1.Col(Col)));
 			}
 		}
-		return *this;
+		return M;
 	}
 };
 
@@ -396,4 +459,16 @@ inline uint32 PackNormalToU32(const FVector3& V)
 	Out |= ((uint32)((V.y + 1.0f) * 127.5f) & 0xff) << 8;
 	Out |= ((uint32)((V.z + 1.0f) * 127.5f) & 0xff) << 16;
 	return Out;
+}
+
+inline uint32 GetNumMips(uint32 Width, uint32 Height)
+{
+	uint32 NumMips = 1;
+	while (Width > 1 || Height > 1)
+	{
+		Width = Max(Width >> 1, 1u);
+		Height = Max(Height >> 1, 1u);
+		++NumMips;
+	}
+	return NumMips;
 }
