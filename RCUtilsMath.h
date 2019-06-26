@@ -228,6 +228,12 @@ struct FVector4
 		return *this;
 	}
 
+	FVector4 GetNormalized() const
+	{
+		float InvLen = 1.0f / sqrt(Dot(*this, *this));
+		return FVector4(x * InvLen, y * InvLen, z * InvLen, w * InvLen);
+	}
+
 	static float Dot(const FVector4& A, const FVector4& B)
 	{
 		return A.x * B.x + A.y * B.y + A.z * B.z + A.w * B.w;
