@@ -134,6 +134,16 @@ struct FVector3
 	{
 		return A.x * B.x + A.y * B.y + A.z * B.z;
 	}
+
+	static FVector3 Min(const FVector3& A, const FVector3& B)
+	{
+		return FVector3(::Min(A.x, B.x), ::Min(A.y, B.y), ::Min(A.z, B.z));
+	}
+
+	static FVector3 Max(const FVector3& A, const FVector3& B)
+	{
+		return FVector3(::Max(A.x, B.x), ::Max(A.y, B.y), ::Max(A.z, B.z));
+	}
 };
 
 inline FVector3 operator + (const FVector3& A, const FVector3& B)
