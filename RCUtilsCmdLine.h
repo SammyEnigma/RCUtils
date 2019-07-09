@@ -55,6 +55,22 @@ namespace RCUtils
 			return ValueIfMissing;
 		}
 
+		float TryGetFloatPrefix(const char* Prefix, float ValueIfMissing)
+		{
+			check(Prefix);
+			uint32 PrefixLength = (uint32)strlen(Prefix);
+			for (const auto& Arg : Args)
+			{
+				if (!_strnicmp(Arg.c_str(), Prefix, PrefixLength))
+				{
+					const char* FloatString = Arg.c_str() + PrefixLength;
+					return (float)atof(FloatString);
+				}
+			}
+
+			return ValueIfMissing;
+		}
+
 		bool TryGetStringFromPrefix(const char* Prefix, const char*& OutValue)
 		{
 			check(Prefix);
