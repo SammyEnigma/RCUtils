@@ -250,6 +250,31 @@ struct FVector4
 	}
 };
 
+inline FVector4 operator + (const FVector4& A, const FVector4& B)
+{
+	return FVector4(A.x + B.x, A.y + B.y, A.z + B.z, A.w + B.w);
+}
+
+inline FVector4 operator - (const FVector4& A, const FVector4& B)
+{
+	return FVector4(A.x - B.x, A.y - B.y, A.z - B.z, A.w - B.w);
+}
+
+inline FVector4 operator * (const FVector4& A, const FVector4& B)
+{
+	return FVector4(A.x * B.x, A.y * B.y, A.z * B.z, A.w * B.w);
+}
+
+inline FVector4 operator * (const FVector4& A, float f)
+{
+	return FVector4(A.x * f, A.y * f, A.z * f, A.w * f);
+}
+
+inline FVector4 operator * (float f, const FVector4& A)
+{
+	return FVector4(A.x * f, A.y * f, A.z * f, A.w * f);
+}
+
 struct FIntVector4
 {
 	union
