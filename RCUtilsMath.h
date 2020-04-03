@@ -152,6 +152,12 @@ struct FVector3
 	{
 		return FVector3(::Max(A.x, B.x), ::Max(A.y, B.y), ::Max(A.z, B.z));
 	}
+
+	FVector3 GetNormalized() const
+	{
+		float InvLen = 1.0f / sqrt(Dot(*this, *this));
+		return FVector3(x * InvLen, y * InvLen, z * InvLen);
+	}
 };
 
 inline FVector3 operator + (const FVector3& A, const FVector3& B)
