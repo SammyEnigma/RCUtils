@@ -39,6 +39,16 @@ inline T Max(T A, T B)
 	return A > B ? A : B;
 }
 
+inline float Clamp(float InMin, float Value, float InMax)
+{
+	return Min<float>(InMax, Max<float>(Value, InMin));
+}
+
+inline double Clamp(double InMin, double Value, double InMax)
+{
+	return Min<double>(InMax, Max<double>(Value, InMin));
+}
+
 template <typename T>
 inline void ZeroMem(T& Object)
 {
