@@ -474,6 +474,17 @@ struct FMatrix4x4
 		return New;
 	}
 
+	static FMatrix4x4 GetScale(FVector3 Scale)
+	{
+		FMatrix4x4 New;
+		MemZero(New);
+		New.Values[0] = Scale.x;
+		New.Values[5] = Scale.y;
+		New.Values[10] = Scale.z;
+		New.Values[15] = 1;
+		return New;
+	}
+
 	static FMatrix4x4 GetRotationX(float AngleRad)
 	{
 		FMatrix4x4 New;
@@ -596,6 +607,15 @@ struct FMatrix4x4
 		Out.Rows[2] = FVector4(r2, -FVector3::Dot(d, s));
 		Out.Rows[3] = FVector4(r3, FVector3::Dot(c, s));
 		return Out;
+	}
+
+	FVector4 Transform(const FVector4& In)
+	{
+		float X = FVector4::Dot(Col(0), In);
+		float Y = FVector4::Dot(Col(1), In);
+		float Z = FVector4::Dot(Col(2), In);
+		float W = FVector4::Dot(Col(3), In);
+		return FVector4(X, Y, Z, W);
 	}
 };
 
