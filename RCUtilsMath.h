@@ -35,6 +35,18 @@ struct FVector2
 		MemZero(New);
 		return New;
 	}
+
+	FVector2() = default;
+	FVector2(float a, float b)
+	{
+		Set(a, b);
+	}
+
+	void Set(float a, float b)
+	{
+		x = a;
+		y = b;
+	}
 };
 
 struct FVector3
