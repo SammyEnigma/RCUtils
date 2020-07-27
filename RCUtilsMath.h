@@ -167,7 +167,7 @@ struct FVector3
 
 	FVector3 GetNormalized() const
 	{
-		float InvLen = 1.0f / sqrt(Dot(*this, *this));
+		float InvLen = (float)(1.0 / sqrt(Dot(*this, *this)));
 		return FVector3(x * InvLen, y * InvLen, z * InvLen);
 	}
 };
@@ -274,7 +274,7 @@ struct FVector4
 
 	FVector4 GetNormalized() const
 	{
-		float InvLen = 1.0f / sqrt(Dot(*this, *this));
+		float InvLen = (float)(1.0 / sqrt(Dot(*this, *this)));
 		return FVector4(x * InvLen, y * InvLen, z * InvLen, w * InvLen);
 	}
 
@@ -391,8 +391,8 @@ struct FMatrix3x3
 	{
 		FMatrix3x3 New;
 		MemZero(New);
-		float Cos = cos(AngleRad);
-		float Sin = sin(AngleRad);
+		float Cos = (float)cos(AngleRad);
+		float Sin = (float)sin(AngleRad);
 		New.Rows[0].x = 1;
 		New.Rows[1].y = Cos;
 		New.Rows[1].z = -Sin;
@@ -405,8 +405,8 @@ struct FMatrix3x3
 	{
 		FMatrix3x3 New;
 		MemZero(New);
-		float Cos = cos(AngleRad);
-		float Sin = sin(AngleRad);
+		float Cos = (float)cos(AngleRad);
+		float Sin = (float)sin(AngleRad);
 		New.Rows[0].x = Cos;
 		New.Rows[0].z = Sin;
 		New.Rows[1].y = 1;
@@ -419,8 +419,8 @@ struct FMatrix3x3
 	{
 		FMatrix3x3 New;
 		MemZero(New);
-		float Cos = cos(AngleRad);
-		float Sin = sin(AngleRad);
+		float Cos = (float)cos(AngleRad);
+		float Sin = (float)sin(AngleRad);
 		New.Rows[0].x = Cos;
 		New.Rows[0].y = -Sin;
 		New.Rows[1].x = Sin;
@@ -501,8 +501,8 @@ struct FMatrix4x4
 	{
 		FMatrix4x4 New;
 		MemZero(New);
-		float Cos = cos(AngleRad);
-		float Sin = sin(AngleRad);
+		float Cos = (float)cos(AngleRad);
+		float Sin = (float)sin(AngleRad);
 		New.Rows[0].x = 1;
 		New.Rows[1].y = Cos;
 		New.Rows[1].z = -Sin;
@@ -516,8 +516,8 @@ struct FMatrix4x4
 	{
 		FMatrix4x4 New;
 		MemZero(New);
-		float Cos = cos(AngleRad);
-		float Sin = sin(AngleRad);
+		float Cos = (float)cos(AngleRad);
+		float Sin = (float)sin(AngleRad);
 		New.Rows[0].x = Cos;
 		New.Rows[0].z = Sin;
 		New.Rows[1].y = 1;
@@ -531,8 +531,8 @@ struct FMatrix4x4
 	{
 		FMatrix4x4 New;
 		MemZero(New);
-		float Cos = cos(AngleRad);
-		float Sin = sin(AngleRad);
+		float Cos = (float)cos(AngleRad);
+		float Sin = (float)sin(AngleRad);
 		New.Rows[0].x = Cos;
 		New.Rows[0].y = -Sin;
 		New.Rows[1].x = Sin;
@@ -662,4 +662,22 @@ inline uint32 GetNumMips(uint32 Width, uint32 Height)
 		++NumMips;
 	}
 	return NumMips;
+}
+
+template <typename T>
+inline T Abs(T A)
+{
+	return A < 0 ? (T)-A : A;
+}
+
+template <typename T>
+inline T Sign(T A)
+{
+	return A < 0 ? (T)-1 : (T)1;
+}
+
+template <typename T>
+inline T Clamp(T A, T Min, T Max)
+{
+	return Max(Min(A, Max), Min);
 }
