@@ -14,6 +14,24 @@ inline float ToDegrees(float Rad)
 	return Rad * (180.0f / (float)M_PI);
 }
 
+template <typename T>
+inline T Abs(T A)
+{
+	return A < 0 ? (T)-A : A;
+}
+
+template <typename T>
+inline T Sign(T A)
+{
+	return A < 0 ? (T)-1 : (T)1;
+}
+
+template <typename T>
+inline T Clamp(T A, T Min, T Max)
+{
+	return Max(Min(A, Max), Min);
+}
+
 struct FVector2
 {
 	union
@@ -309,6 +327,60 @@ inline FVector4 operator * (float f, const FVector4& A)
 	return FVector4(A.x * f, A.y * f, A.z * f, A.w * f);
 }
 
+struct FIntVector3
+{
+	union
+	{
+		int32 Values[3];
+		struct
+		{
+			int32 x, y, z;
+		};
+	};
+
+	static FIntVector3 GetZero()
+	{
+		FIntVector3 New;
+		MemZero(New);
+		return New;
+	}
+
+	FIntVector3() {}
+
+	FIntVector3(int32 InX, int32 InY, int32 InZ)
+	{
+		Set(InX, InY, InZ);
+	}
+
+	void Set(int32 InX, int32 InY, int32 InZ)
+	{
+		x = InX;
+		y = InY;
+		z = InZ;
+	}
+
+	FIntVector3 GetAbs()
+	{
+		return FIntVector3(Abs(x), Abs(y), Abs(z));
+	}
+
+	int GetMaxComponent()
+	{
+		return Max(x, Max(y, z));
+	}
+
+	int GetMinComponent()
+	{
+		return Min(x, Min(y, z));
+	}
+};
+
+inline FIntVector3 operator - (const FIntVector3& A, const FIntVector3& B)
+{
+	return FIntVector3(A.x - B.x, A.y - B.y, A.z - B.z);
+}
+
+
 struct FIntVector4
 {
 	union
@@ -331,10 +403,7 @@ struct FIntVector4
 
 	FIntVector4(int32 InX, int32 InY, int32 InZ, int32 InW)
 	{
-		x = InX;
-		y = InY;
-		z = InZ;
-		w = InW;
+		Set(InX, InY, InZ, InW);
 	}
 
 	void Set(int32 InX, int32 InY, int32 InZ, int32 InW)
@@ -662,22 +731,4 @@ inline uint32 GetNumMips(uint32 Width, uint32 Height)
 		++NumMips;
 	}
 	return NumMips;
-}
-
-template <typename T>
-inline T Abs(T A)
-{
-	return A < 0 ? (T)-A : A;
-}
-
-template <typename T>
-inline T Sign(T A)
-{
-	return A < 0 ? (T)-1 : (T)1;
-}
-
-template <typename T>
-inline T Clamp(T A, T Min, T Max)
-{
-	return Max(Min(A, Max), Min);
 }
