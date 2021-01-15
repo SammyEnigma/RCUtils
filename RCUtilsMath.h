@@ -183,6 +183,11 @@ struct FVector3
 		return FVector3(::Max(A.x, B.x), ::Max(A.y, B.y), ::Max(A.z, B.z));
 	}
 
+	static FVector3 Abs(const FVector3& A)
+	{
+		return FVector3(::Abs(A.x), ::Abs(A.y), ::Abs(A.z));
+	}
+
 	FVector3 GetNormalized() const
 	{
 		float InvLen = (float)(1.0 / sqrt(Dot(*this, *this)));
@@ -198,6 +203,11 @@ inline FVector3 operator + (const FVector3& A, const FVector3& B)
 inline FVector3 operator - (const FVector3& A, const FVector3& B)
 {
 	return FVector3(A.x - B.x, A.y - B.y, A.z - B.z);
+}
+
+inline FVector3 operator - (const FVector3& A)
+{
+	return FVector3(-A.x, -A.y, -A.z);
 }
 
 inline FVector3 operator * (const FVector3& A, const FVector3& B)
@@ -700,7 +710,19 @@ struct FMatrix4x4
 	}
 };
 
-inline FMatrix4x4 CalculateProjectionMatrix(float FOVRadians, float Aspect, float NearZ, float FarZ)
+inline FMatrix4x4 CalculateProjectionMatrixLH(float FOVRadians, float Aspect, float NearZ, float FarZ)
+{
+	const float HalfTanFOV = (float)tan(FOVRadians / 2.0);
+	FMatrix4x4 New = FMatrix4x4::GetZero();
+	New.Set(0, 0, 1.0f / (Aspect * HalfTanFOV));
+	New.Set(1, 1, 1.0f / HalfTanFOV);
+	New.Set(2, 3, 1);
+	New.Set(2, 2, FarZ / (FarZ - NearZ));
+	New.Set(3, 2, (NearZ * FarZ) / (NearZ - FarZ));
+	return New;
+}
+
+inline FMatrix4x4 CalculateProjectionMatrixRH(float FOVRadians, float Aspect, float NearZ, float FarZ)
 {
 	const float HalfTanFOV = (float)tan(FOVRadians / 2.0);
 	FMatrix4x4 New = FMatrix4x4::GetZero();
@@ -708,7 +730,7 @@ inline FMatrix4x4 CalculateProjectionMatrix(float FOVRadians, float Aspect, floa
 	New.Set(1, 1, 1.0f / HalfTanFOV);
 	New.Set(2, 3, -1);
 	New.Set(2, 2, FarZ / (NearZ - FarZ));
-	New.Set(3, 2, -(FarZ * NearZ) / (FarZ - NearZ));
+	New.Set(3, 2, (NearZ * FarZ) / (NearZ - FarZ));
 	return New;
 }
 
